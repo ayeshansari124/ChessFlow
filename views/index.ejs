@@ -1,96 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ChessFlow – Real-time Multiplayer Chess with Socket.io</title>
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>ChessFlow</title>
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
 
   <style>
-    body {
-      margin: 0;
-      background: #18181b;
-      color: #e5e5e5;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      gap: 16px;
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
     }
 
-    #status {
-      font-size: 14px;
+    body{
+      min-height:100vh;
+      background:radial-gradient(circle at top,#27272a,#18181b 60%);
+      font-family:Inter,system-ui,sans-serif;
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
     }
 
-    .chessboard {
-      display: grid;
-      grid-template-columns: repeat(8, minmax(0, 1fr));
-      grid-template-rows: repeat(8, minmax(0, 1fr));
-      width: 400px;
-      height: 400px;
-      transform: rotate(0deg);
+    .game-container{
+      width:100%;
+      max-width:620px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:28px;
+      padding:20px;
+      backdrop-filter:blur(14px);
+      box-shadow:0 20px 60px rgba(0,0,0,.45);
     }
 
-    .flipped {
-      transform: rotate(180deg);
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:20px;
     }
 
-    .square {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .logo h1{
+      font-size:28px;
+      font-weight:800;
+      letter-spacing:-1px;
     }
 
-    .square.light {
-      background-color: #f0d9b5;
+    .logo p{
+      color:#a1a1aa;
+      font-size:14px;
+      margin-top:2px;
     }
 
-    .square.dark {
-      background-color: #b58863;
+    .status-box{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.06);
+      padding:10px 14px;
+      border-radius:14px;
+      text-align:right;
     }
 
-    .piece {
-      font-size: 36px;
-      font-family: "DejaVu Sans", "Segoe UI Symbol", sans-serif;
-      user-select: none;
+    #status{
+      font-size:14px;
+      color:#e4e4e7;
+      font-weight:600;
     }
 
-    .piece.white {
-      color: #ffffff;
-      text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+    #turn{
+      margin-top:2px;
+      font-size:12px;
+      color:#a1a1aa;
     }
 
-    .piece.black {
-      color: #000000;
-      text-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
+    .board-wrapper{
+      position:relative;
     }
 
-    .piece.draggable {
-      cursor: grab;
+    .chessboard{
+      width:100%;
+      aspect-ratio:1/1;
+      display:grid;
+      grid-template-columns:repeat(8,1fr);
+      grid-template-rows:repeat(8,1fr);
+      overflow:hidden;
+      border-radius:22px;
+      border:6px solid #27272a;
     }
 
-    .dragging {
-      opacity: 0.5;
+    .square{
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:background .15s ease;
     }
 
-    .flipped .piece {
-      transform: rotate(180deg);
+    .light{
+      background:#f0d9b5;
+    }
+
+    .dark{
+      background:#b58863;
+    }
+
+    .selected{
+      box-shadow:inset 0 0 0 4px #22c55e;
+    }
+
+    .valid-move::after{
+      content:"";
+      width:14px;
+      height:14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.6);
+      position:absolute;
+    }
+
+    .piece{
+      font-size:clamp(28px,4vw,48px);
+      user-select:none;
+      cursor:grab;
+      transition:transform .15s ease,opacity .15s ease;
+    }
+
+    .piece:active{
+      cursor:grabbing;
+    }
+
+    .dragging{
+      opacity:.5;
+    }
+
+    .white{
+      color:white;
+      text-shadow:0 0 2px rgba(0,0,0,.9);
+    }
+
+    .black{
+      color:black;
+      text-shadow:0 0 2px rgba(255,255,255,.5);
+    }
+
+    .flipped{
+      transform:rotate(180deg);
+    }
+
+    .flipped .piece{
+      transform:rotate(180deg);
+    }
+
+    .bottom-info{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:14px;
+    }
+
+    .info-card{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .info-card h3{
+      font-size:13px;
+      color:#a1a1aa;
+      margin-bottom:8px;
+      font-weight:500;
+    }
+
+    .captured{
+      display:flex;
+      flex-wrap:wrap;
+      gap:4px;
+      font-size:24px;
+    }
+
+    @media (max-width:640px){
+      .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .status-box{
+        width:100%;
+        text-align:left;
+      }
+
+      .bottom-info{
+        grid-template-columns:1fr;
+      }
     }
   </style>
 </head>
+
 <body>
-  <div id="status">Connecting…</div>
-  <div class="chessboard"></div>
+  <div class="game-container">
+    <div class="topbar">
+      <div class="logo">
+        <h1>ChessFlow</h1>
+        <p>Realtime multiplayer chess</p>
+      </div>
 
-  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"
-          integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+"
-          crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"
-          integrity="sha512-xRllwz2gdZciIB+AkEbeq+gVhX8VB8XsfqeFbUh+SzHlN96dEduwtTuVuc2u9EROlmW9+yhRlxjif66ORpsgVA=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      <div class="status-box">
+        <div id="status">Connecting...</div>
+        <div id="turn">Waiting for players...</div>
+      </div>
+    </div>
 
+    <div class="board-wrapper">
+      <div class="chessboard"></div>
+    </div>
+
+    <div class="bottom-info">
+      <div class="info-card">
+        <h3>Captured by White</h3>
+        <div id="captured-white" class="captured"></div>
+      </div>
+
+      <div class="info-card">
+        <h3>Captured by Black</h3>
+        <div id="captured-black" class="captured"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js" crossorigin="anonymous"></script>
   <script src="/JS/chessgame.js"></script>
 </body>
 </html>

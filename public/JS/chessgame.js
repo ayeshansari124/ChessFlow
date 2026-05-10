@@ -7,7 +7,6 @@ let draggedPiece = null;
 let sourceSquare = null;
 let playerRole = null;
 
-// ---------- RENDER BOARD ----------
 const renderBoard = () => {
   const board = chess.board();
   boardElement.innerHTML = "";
@@ -15,29 +14,37 @@ const renderBoard = () => {
   board.forEach((row, rowIndex) => {
     row.forEach((square, squareIndex) => {
       const squareElement = document.createElement("div");
+
       squareElement.classList.add(
         "square",
-        (rowIndex + squareIndex) % 2 === 0 ? "light" : "dark"
+        (rowIndex + squareIndex) % 2 === 0 ? "light" : "dark",
       );
+
       squareElement.dataset.row = rowIndex;
       squareElement.dataset.col = squareIndex;
 
       if (square) {
         const pieceElement = document.createElement("div");
+
         pieceElement.classList.add(
           "piece",
-          square.color === "w" ? "white" : "black"
+          square.color === "w" ? "white" : "black",
         );
+
         pieceElement.innerText = getPieceUnicode(square);
 
-        // only allow dragging your own color
         pieceElement.draggable = playerRole === square.color;
 
         pieceElement.addEventListener("dragstart", (e) => {
           if (!pieceElement.draggable) return;
 
           draggedPiece = pieceElement;
-          sourceSquare = { row: rowIndex, col: squareIndex };
+
+          sourceSquare = {
+            row: rowIndex,
+            col: squareIndex,
+          };
+
           e.dataTransfer.setData("text/plain", "");
         });
 
@@ -55,6 +62,7 @@ const renderBoard = () => {
 
       squareElement.addEventListener("drop", (e) => {
         e.preventDefault();
+
         if (!draggedPiece || !sourceSquare) return;
 
         const targetSquare = {
@@ -69,7 +77,6 @@ const renderBoard = () => {
     });
   });
 
-  // flip board for black (visual only)
   if (playerRole === "b") {
     boardElement.classList.add("flipped");
   } else {
@@ -79,9 +86,7 @@ const renderBoard = () => {
   updateStatus();
 };
 
-// ---------- HANDLE MOVE (NO STUPID INVERSION) ----------
 const handleMove = (source, target) => {
-  // chess.js board() is 0 = rank 8, 7 = rank 1
   const move = {
     from: `${String.fromCharCode(97 + source.col)}${8 - source.row}`,
     to: `${String.fromCharCode(97 + target.col)}${8 - target.row}`,
@@ -90,7 +95,6 @@ const handleMove = (source, target) => {
   socket.emit("move", move);
 };
 
-// ---------- UNICODE PIECES ----------
 const getPieceUnicode = (piece) => {
   const unicodePieces = {
     w: {
@@ -101,6 +105,7 @@ const getPieceUnicode = (piece) => {
       q: "♕",
       k: "♔",
     },
+
     b: {
       p: "♟",
       r: "♜",
@@ -114,7 +119,6 @@ const getPieceUnicode = (piece) => {
   return unicodePieces[piece.color][piece.type] || "";
 };
 
-// ---------- STATUS TEXT ----------
 const updateStatus = () => {
   if (!statusElement) return;
 
@@ -124,14 +128,14 @@ const updateStatus = () => {
   }
 
   const you = playerRole === "w" ? "White" : "Black";
+
   const turn = chess.turn() === "w" ? "White" : "Black";
 
   statusElement.textContent = `You are ${you}. Turn: ${turn}`;
 };
 
-// ---------- SOCKET EVENTS ----------
 socket.on("playerRole", (role) => {
-  playerRole = role; // 'w' or 'b'
+  playerRole = role;
   renderBoard();
 });
 
