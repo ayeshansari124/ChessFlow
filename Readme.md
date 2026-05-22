@@ -1,56 +1,75 @@
-# ChessFlow – Real-time Multiplayer Chess Platform
+# ♟️ ChessFlow - Realtime Multiplayer Chess
 
-A real-time chess platform to **play live multiplayer matches, drag & drop pieces, and watch moves sync instantly across players.**  
-Built using **WebSockets** with smooth board rendering, turn validation, and role-based gameplay.
+A real-time multiplayer chess application built using **Node.js, Express, Socket.IO, Chess.js, and EJS**.
 
----
+ChessFlow enables players to compete live in the browser through synchronized gameplay, realtime move updates, and interactive turn-based sessions.
 
-## 🚀 Features
+## 🌐 Live Demo
 
-### 🧑‍🤝‍🧑 Multiplayer Gameplay
-- Real-time communication using **Socket.io**
-- Automatic role assignment: **White**, **Black**, or **Spectator**
-- Turn-based validation using **chess.js**
-- Move syncing across all connected clients
-- Visual board flipping for Black
+https://chessflow.onrender.com/
 
 ---
 
-## ♟ Core Chess Functionality
-- Drag & drop piece movement
-- Full rule validation via **chess.js**
-- Only your assigned color can move
-- Smooth board updates using FEN syncing
+## ✨ Features
+
+- Realtime multiplayer chess gameplay
+- Live move synchronization
+- Turn-based game handling
+- Automatic board state updates
+- Player color assignment
+- Interactive chess interface
+- Responsive gameplay layout
 
 ---
 
-## 🎨 Frontend UI
-- Clean, minimal chess interface  
-- Light/Dark square styling  
-- Automatic rotation when playing as Black  
-- Real-time status indicator:  
-  - **You are White / Black**  
-  - **Turn: White / Black**
+## 🚀 Tech Stack
+
+- Node.js
+- Express.js
+- Socket.IO
+- Chess.js
+- EJS
+- JavaScript
 
 ---
 
-## 🛠 Tech Stack
-- **Node.js + Express** – backend server  
-- **Socket.io** – real-time communication  
-- **Chess.js** – game logic & rules engine  
-- **EJS** – templating for UI  
-- **HTML / CSS / JavaScript** – clean and lightweight frontend  
+## 📸 Screenshots
+
+![White Player View](./screenshots/white-player-view.png)
+
+![Black Player View](./screenshots/black-player-view.png)
 
 ---
 
-## 📚 Learnings
-- Implementing real-time apps with **Socket.io**  
-- Enforcing turn logic and move permissions based on color  
-- Mapping drag events to algebraic chess notation  
-- Rendering and syncing **FEN** states between players  
-- Managing multi-client state conflicts  
-- Structuring a scalable real-time game loop in **Node.js**
+## 🧠 What I Learned
+
+- Realtime communication with Socket.IO
+- Multiplayer synchronization workflows
+- Shared state management
+- Chess rule implementation using Chess.js
+- Client-server event handling
+- Interactive backend-driven application architecture
+- Building websocket-powered applications with Express
+
+This project improved my understanding of realtime systems and multiplayer interaction handling.
 
 ---
 
-### Built with ❤️ by Ayesha  
+## 💡 Future Improvements
+
+- Matchmaking system
+- Game room support
+- Spectator mode
+- In-game chat
+- Timer functionality
+- Match history
+- Authentication system
+- Rankings and leaderboards
+
+---
+
+## 👩‍💻 Author
+
+**Ayesha Ansari**
+
+Built with ❤️ using Node.js and Socket.IO
