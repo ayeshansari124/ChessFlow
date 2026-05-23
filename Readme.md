@@ -6,7 +6,7 @@ ChessFlow enables players to compete live in the browser through synchronized ga
 
 ## 🌐 Live Demo
 
-https://chessflow.onrender.com/
+https://chess-flow-gamma.vercel.app/
 
 ---
 
